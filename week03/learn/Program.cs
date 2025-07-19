@@ -4,10 +4,14 @@ public class Program
 {
     static void Main(string[] args)
     {
-        Console.WriteLine("\n======================\nDuplicate Counter\n======================");
+        Console.WriteLine("\n======================");
+        Console.WriteLine("Duplicate Counter");
+        Console.WriteLine("======================");
         DuplicateCounter.Run();
 
-        Console.WriteLine("\n======================\nTranslator\n======================");
+        Console.WriteLine("\n======================");
+        Console.WriteLine("Translator");
+        Console.WriteLine("======================");
         Translator.Run();
     }
 }

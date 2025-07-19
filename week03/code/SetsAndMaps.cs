@@ -21,8 +21,25 @@ public static class SetsAndMaps
     /// <param name="words">An array of 2-character words (lowercase, no duplicates)</param>
     public static string[] FindPairs(string[] words)
     {
+        HashSet<string> seen = new HashSet<string>();
+        List<string> result = new List<string>();
+
+        foreach (var word in words)
+        {
+            if (word[0] == word[1]) continue; // skip symmetric like 'aa'
+
+            string reversed = $"{word[1]}{word[0]}";
+            if (seen.Contains(reversed))
+            {
+                result.Add($"{reversed} & {word}");
+            }
+            else
+            {
+                seen.Add(word);
+            }
+        }
         // TODO Problem 1 - ADD YOUR CODE HERE
-        return [];
+        return result.ToArray();
     }
 
     /// <summary>
@@ -39,15 +56,32 @@ public static class SetsAndMaps
     public static Dictionary<string, int> SummarizeDegrees(string filename)
     {
         var degrees = new Dictionary<string, int>();
+
         foreach (var line in File.ReadLines(filename))
         {
-            var fields = line.Split(",");
-            // TODO Problem 2 - ADD YOUR CODE HERE
+            var fields = line.Split(',');
+
+            // Ensure the line has at least 4 fields
+            if (fields.Length >= 4)
+            {
+                string degree = fields[3].Trim(); // Column index 3 is the 4th column
+
+                if (!string.IsNullOrEmpty(degree))
+                {
+                    if (degrees.ContainsKey(degree))
+                    {
+                        degrees[degree]++;
+                    }
+                    else
+                    {
+                        degrees[degree] = 1;
+                    }
+                }
+            }
         }
 
         return degrees;
     }
-
     /// <summary>
     /// Determine if 'word1' and 'word2' are anagrams.  An anagram
     /// is when the same letters in a word are re-organized into a 
@@ -66,8 +100,39 @@ public static class SetsAndMaps
     /// </summary>
     public static bool IsAnagram(string word1, string word2)
     {
-        // TODO Problem 3 - ADD YOUR CODE HERE
-        return false;
+        // Normalize inputs: remove spaces and make lowercase
+        word1 = word1.Replace(" ", "").ToLower();
+        word2 = word2.Replace(" ", "").ToLower();
+
+        // If lengths differ, can't be anagrams
+        if (word1.Length != word2.Length)
+            return false;
+
+        Dictionary<char, int> charCount = new Dictionary<char, int>();
+
+        // Count characters from word1
+        foreach (char c in word1)
+        {
+            if (charCount.ContainsKey(c))
+                charCount[c]++;
+            else
+                charCount[c] = 1;
+        }
+
+        // Subtract counts using word2
+        foreach (char c in word2)
+        {
+            if (!charCount.ContainsKey(c))
+                return false;
+
+            charCount[c]--;
+
+            if (charCount[c] < 0)
+                // TODO Problem 3 - ADD YOUR CODE HERE
+                return false;
+        }
+
+        return true;
     }
 
     /// <summary>
@@ -84,6 +149,25 @@ public static class SetsAndMaps
     /// https://earthquake.usgs.gov/earthquakes/feed/v1.0/geojson.php
     /// 
     /// </summary>
+
+    /// TODO Problem 5:
+    // 1. Add code in FeatureCollection.cs to describe the JSON using classes and properties 
+    // on those classes so that the call to Deserialize above works properly.
+    public class FeatureCollection
+    {
+        public List<Feature> Features { get; set; }
+    }
+
+    public class Feature
+    {
+        public Properties Properties { get; set; }
+    }
+
+    public class Properties
+    {
+        public string Place { get; set; }
+        public double? Mag { get; set; } // nullable because sometimes magnitude is missing
+    }
     public static string[] EarthquakeDailySummary()
     {
         const string uri = "https://earthquake.usgs.gov/earthquakes/feed/v1.0/summary/all_day.geojson";
@@ -95,12 +179,23 @@ public static class SetsAndMaps
         var options = new JsonSerializerOptions { PropertyNameCaseInsensitive = true };
 
         var featureCollection = JsonSerializer.Deserialize<FeatureCollection>(json, options);
-
-        // TODO Problem 5:
-        // 1. Add code in FeatureCollection.cs to describe the JSON using classes and properties 
-        // on those classes so that the call to Deserialize above works properly.
         // 2. Add code below to create a string out each place a earthquake has happened today and its magitude.
+        var result = new List<string>();
+        foreach (var feature in featureCollection?.Features ?? [])
+        {
+            var place = feature.Properties?.Place ?? "Unknown location";
+
+            string magnitude = feature.Properties?.Mag.HasValue == true
+                ? feature.Properties.Mag.Value.ToString("0.00")
+                : "unknown";
+
+            string summary = $"Place: {place}, Magnitude: {magnitude}";
+            result.Add(summary);
+        }
+
+
+
         // 3. Return an array of these string descriptions.
-        return [];
-    }
+        return result.ToArray();
+    }  
 }
