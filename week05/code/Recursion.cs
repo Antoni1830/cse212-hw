@@ -121,10 +121,7 @@ public static class Recursion
         // TODO Start Problem 4
     }
 
-    /// <summary>
-    /// Use recursion to insert all paths that start at (0,0) and end at the
-    /// 'end' square into the results list.
-    /// </summary>
+  
     public static void SolveMaze(List<string> results, Maze maze, int x = 0, int y = 0, List<ValueTuple<int, int>>? currPath = null)
     {
         // If this is the first time running the function, then we need
@@ -138,6 +135,7 @@ public static class Recursion
         // TODO Start Problem 5
         // ADD CODE HERE
 
-        // results.Add(currPath.AsString()); // Use this to add your path to the results array keeping track of complete maze solutions when you find the solution.
+       .
     }
+   
 }
