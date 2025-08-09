@@ -2,7 +2,7 @@ using System.Collections;
 
 public class BinarySearchTree : IEnumerable<int>
 {
-    private Node? _root;
+    private Node? _root; // The root of the BST
 
     /// <summary>
     /// Insert a new node in the BST.
@@ -11,12 +11,12 @@ public class BinarySearchTree : IEnumerable<int>
     {
         // Create new node
         Node newNode = new(value);
-        // If the list is empty, then point both head and tail to the new node.
+       
         if (_root is null)
         {
             _root = newNode;
         }
-        // If the list is not empty, then only head will be affected.
+        
         else
         {
             _root.Insert(value);
@@ -81,6 +81,15 @@ public class BinarySearchTree : IEnumerable<int>
     private void TraverseBackward(Node? node, List<int> values)
     {
         // TODO Problem 3
+        if (node is not null) // Check if the node is not null
+        {
+            TraverseBackward(node.Right, values);
+           
+            values.Add(node.Data); 
+           
+            TraverseBackward(node.Left, values); 
+            
+        }
     }
 
     /// <summary>
